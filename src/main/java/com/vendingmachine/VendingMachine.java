@@ -1,6 +1,5 @@
 package com.vendingmachine;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,6 @@ class VendingMachine {
     }
 
     public VendingMachine() {
-
     }
 
     Double findValue(InsertedCoin insertedCoin) {

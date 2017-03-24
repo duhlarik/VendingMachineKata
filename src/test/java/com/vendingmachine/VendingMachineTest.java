@@ -1,6 +1,6 @@
 package com.vendingmachine;
 
-import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -8,15 +8,17 @@ import static org.junit.Assert.assertEquals;
 public class VendingMachineTest {
 
     private static final double DELTA = 1e-15;
+    private VendingMachine vendingMachine;
 
-    @After
-
+    @Before
+    public void setUp() {
+        vendingMachine = new VendingMachine();
+    }
 
     @Test
     public void vendingMachineCanFindTheValueOfACoin() {
         // ARRANGE
         InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
-        VendingMachine vendingMachine = new VendingMachine();
 
         // ACT
         Double value = vendingMachine.findValue(nickel);
@@ -30,7 +32,6 @@ public class VendingMachineTest {
         // ARRANGE
         InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
         InsertedCoin dime = new InsertedCoin(2.268, 17.91);
-        VendingMachine vendingMachine = new VendingMachine();
 
         // ACT
         Double value1 = vendingMachine.findValue(quarter);
@@ -47,7 +48,6 @@ public class VendingMachineTest {
         // ARRANGE
         InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
         InsertedCoin dime = new InsertedCoin(2.268, 17.91);
-        VendingMachine vendingMachine = new VendingMachine();
         Double sumOfValues;
 
         // ACT
@@ -66,7 +66,6 @@ public class VendingMachineTest {
         InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
         InsertedCoin dime = new InsertedCoin(2.268, 17.91);
         InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
-        VendingMachine vendingMachine = new VendingMachine();
         Double sumOfValues;
 
         // ACT
@@ -84,7 +83,6 @@ public class VendingMachineTest {
     public void insertingAnInvalidCoinReturnsZero() {
         // ARRANGE
         InsertedCoin penny = new InsertedCoin(2.500, 19.05);
-        VendingMachine vendingMachine = new VendingMachine();
         Double sumOfValues;
 
         // ACT
@@ -103,7 +101,6 @@ public class VendingMachineTest {
         InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
         InsertedCoin dime = new InsertedCoin(2.268, 17.91);
         InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
-        VendingMachine vendingMachine = new VendingMachine();
         Double sumOfValues;
 
         // ACT
@@ -123,7 +120,6 @@ public class VendingMachineTest {
         InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
         InsertedCoin dime = new InsertedCoin(2.268, 17.91);
         InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
-        VendingMachine vendingMachine = new VendingMachine();
 
         // ACT
         vendingMachine.findValue(nickel);
@@ -142,7 +138,6 @@ public class VendingMachineTest {
         // ARRANGE
         InsertedCoin quarter1 = new InsertedCoin(5.670, 24.26);
         InsertedCoin quarter2 = new InsertedCoin(5.670, 24.26);
-        VendingMachine vendingMachine = new VendingMachine();
 
         // ACT
         vendingMachine.findValue(quarter2);
@@ -159,7 +154,6 @@ public class VendingMachineTest {
         // ARRANGE
         InsertedCoin quarter1 = new InsertedCoin(5.670, 24.26);
         InsertedCoin quarter2 = new InsertedCoin(5.670, 24.26);
-        VendingMachine vendingMachine = new VendingMachine();
 
         // ACT
         vendingMachine.findValue(quarter2);
