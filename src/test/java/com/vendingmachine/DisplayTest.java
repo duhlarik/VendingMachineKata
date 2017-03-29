@@ -57,4 +57,13 @@ public class DisplayTest {
         vendingMachine.done();
         assertThat(display.getMessage(), is("INSERT COIN"));
     }
+
+    @Test
+    public void showsThePriceWhenInsufficientTenderedAmount() throws Exception {
+        vendingMachine.insertCoin(QUARTER);
+
+        vendingMachine.dispenseProduct(Products.CHIPS);
+
+        assertThat(display.getMessage(), is("PRICE: $0.50"));
+    }
 }

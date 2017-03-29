@@ -66,6 +66,8 @@ class VendingMachine implements Observable {
             productIsDispensed = true;
             display.productWasDispensed();
             tendered.clear();
+        } else {
+            display.notEnoughTendered(price);
         }
         return changeDue;
     }

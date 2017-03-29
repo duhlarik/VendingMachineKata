@@ -6,7 +6,7 @@ public class Display {
 
     final String INSERT_COIN = "INSERT COIN";
     final String THANK_YOU = "THANK YOU";
-    final String PRICE = "PRICE";
+    final String PRICE = "PRICE: ";
     final String AMOUNT_TENDERED = "AMOUNT TENDERED: ";
     final String CHANGE_DUE = "CHANGE DUE: ";
     final String SOLD_OUT = "SOLD OUT";
@@ -30,5 +30,9 @@ public class Display {
 
     public void productWasDispensed() {
         message = THANK_YOU;
+    }
+
+    public void notEnoughTendered(double price) {
+        message = PRICE + currencyFormat.format(price);
     }
 }
