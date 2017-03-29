@@ -4,38 +4,42 @@ import java.text.DecimalFormat;
 
 public class Display implements VendingMachineObserver {
 
-    final String INSERT_COIN = "INSERT COIN";
-    final String THANK_YOU = "THANK YOU";
-    final String PRICE = "PRICE: ";
-    final String AMOUNT_TENDERED = "AMOUNT TENDERED: ";
-    final String CHANGE_DUE = "CHANGE DUE: ";
-    final String SOLD_OUT = "SOLD OUT";
-    final String EXACT_CHANGE = "EXACT CHANGE ONLY";
+    private final String INSERT_COIN = "INSERT COIN ";
+    private final String THANK_YOU = "THANK YOU ";
+    private final String PRICE = "PRICE: ";
+    private final String AMOUNT_TENDERED = "AMOUNT TENDERED: ";
+    private final String SOLD_OUT = "SOLD OUT ";
+    private final String EXACT_CHANGE = "EXACT CHANGE ONLY ";
+    private final String ZERO = "$0.00";
 
-    String message = INSERT_COIN;
-    DecimalFormat currencyFormat = new DecimalFormat("$0.00");
+    private String message = INSERT_COIN;
+    private String moneyMessage = ZERO;
+    private DecimalFormat currencyFormat = new DecimalFormat("$0.00");
 
     String getMessage() {
-        return message;
+        return message + moneyMessage;
     }
-
 
     @Override
     public void tenderedAmountChanged(double newAmountTendered) {
         if (newAmountTendered > 0) {
-            message = AMOUNT_TENDERED + currencyFormat.format(newAmountTendered);
+            message = AMOUNT_TENDERED;
+            moneyMessage = currencyFormat.format(newAmountTendered);
         } else {
             message = INSERT_COIN;
+            moneyMessage = ZERO;
         }
     }
 
     @Override
-    public void productWasDispensed() {
+    public void productWasDispensed(Products product) {
         message = THANK_YOU;
+        moneyMessage = ZERO;
     }
 
     @Override
     public void notEnoughTendered(double price) {
-        message = PRICE + currencyFormat.format(price);
+        message = PRICE;
+        moneyMessage = currencyFormat.format(price);
     }
 }

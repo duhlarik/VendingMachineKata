@@ -2,16 +2,11 @@ package com.vendingmachine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observer;
 
 class VendingMachine {
 
     private List<Double> tendered = new ArrayList<>();
-    private List<Observer> vm = new ArrayList<>();
-    //    private Observable productDispensed = new VendingMachine();
-    boolean productIsDispensed = false;
     private List<VendingMachineObserver> observers = new ArrayList<>();
-
 
     List<Double> getTendered() {
         return tendered;
@@ -36,14 +31,15 @@ class VendingMachine {
         return amountTendered;
     }
 
-    Double dispenseProduct(Products product) {
+    double dispenseProduct(Products product) {
         double amountTendered = amountTendered();
-        Double price = Products.PRICE(product);
-        Double changeDue = 0.00;
+        double price = Products.PRICE(product);
+        double changeDue = 0.00;
+        boolean productIsDispensed = false;
         if (tenderedIsEnough(amountTendered, price)) {
             changeDue = amountTendered - price;
             productIsDispensed = true;
-            observers.forEach(observer -> observer.productWasDispensed());
+            observers.forEach(observer -> observer.productWasDispensed(product));
             tendered.clear();
         } else {
             observers.forEach(observer -> observer.notEnoughTendered(price));

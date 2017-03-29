@@ -1,9 +1,10 @@
 package com.vendingmachine;
 
 public interface VendingMachineObserver {
+
     void tenderedAmountChanged(double newAmountTendered);
 
-    void productWasDispensed();
+    void productWasDispensed(Products product);
 
     void notEnoughTendered(double price);
 }

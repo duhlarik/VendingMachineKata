@@ -5,7 +5,7 @@ public enum Products {
     CHIPS (.50),
     CANDY (.65);
 
-    private final double PRICE;
+    final double PRICE;
 
     Products(double PRICE) {
         this.PRICE = PRICE;

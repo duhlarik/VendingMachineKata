@@ -24,7 +24,7 @@ public class DisplayTest {
     public void showsInsertCoinWhenNoMoneyTendered() throws Exception {
         assertThat(vendingMachine.amountTendered(), is(0.0));
 
-        assertThat(display.getMessage(), is ("INSERT COIN"));
+        assertThat(display.getMessage(), is ("INSERT COIN $0.00"));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class DisplayTest {
 
         vendingMachine.dispenseProduct(Products.CHIPS);
 
-        assertThat(display.getMessage(), is("THANK YOU"));
+        assertThat(display.getMessage(), is("THANK YOU $0.00"));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class DisplayTest {
         vendingMachine.dispenseProduct(Products.CHIPS);
 
         vendingMachine.done();
-        assertThat(display.getMessage(), is("INSERT COIN"));
+        assertThat(display.getMessage(), is("INSERT COIN $0.00"));
     }
 
     @Test
