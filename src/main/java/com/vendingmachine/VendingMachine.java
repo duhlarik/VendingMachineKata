@@ -63,4 +63,10 @@ class VendingMachine {
     void addObserver(VendingMachineObserver observer){
         observers.add(observer);
     }
+
+    public double returnCoins() {
+        double amountTendered = amountTendered();
+        tendered.clear();
+        return amountTendered;
+    }
 }

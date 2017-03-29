@@ -213,14 +213,16 @@ public class VendingMachineTest {
 
     @Test
     public void amountTenderedGoesBackToZeroWhenDone() throws Exception {
+        // ARRANGE
         InsertedCoin quarter = QUARTER;
         vendingMachine.insertCoin(quarter);
 
+        // ACT
         vendingMachine.done();
 
+        // ASSERT
         assertThat(vendingMachine.amountTendered(), is(0.0));
     }
-
 
     @Test
     public void coinsAreReturnedWhenReturnCoinsButtonIsPressed() {
@@ -232,9 +234,9 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(quarter2);
 
         // ACT
-        vendingMachine.returnCoins();
+        double amountTendered = vendingMachine.returnCoins();
 
         // ASSERT
-        assertEquals(0, vendingMachine.amountTendered(), DELTA);
+        assertEquals(.50, amountTendered, DELTA);
     }
 }
