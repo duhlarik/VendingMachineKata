@@ -36,4 +36,25 @@ public class DisplayTest {
 
         assertThat(display.getMessage(), is("AMOUNT TENDERED: $0.50"));
     }
+
+    @Test
+    public void showsThankYouWhenProductIsDispensed() throws Exception {
+        vendingMachine.insertCoin(QUARTER);
+        vendingMachine.insertCoin(QUARTER);
+
+        vendingMachine.dispenseProduct(Products.CHIPS);
+
+        assertThat(display.getMessage(), is("THANK YOU"));
+    }
+
+    @Test
+    public void goesBackToInsertCoinWhenTransactionIsComplete() throws Exception {
+        vendingMachine.insertCoin(QUARTER);
+        vendingMachine.insertCoin(QUARTER);
+
+        vendingMachine.dispenseProduct(Products.CHIPS);
+
+        vendingMachine.done();
+        assertThat(display.getMessage(), is("INSERT COIN"));
+    }
 }

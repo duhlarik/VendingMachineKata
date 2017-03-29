@@ -6,7 +6,6 @@ import java.util.Observer;
 
 class VendingMachine implements Observable {
 
-    private boolean tenderedIsEnough = false;
     private List<Double> tendered = new ArrayList<>();
     private List<Observer> vm = new ArrayList<>();
     //    private Observable productDispensed = new VendingMachine();
@@ -65,15 +64,22 @@ class VendingMachine implements Observable {
         if (tenderedIsEnough(amountTendered, price)) {
             changeDue = amountTendered - price;
             productIsDispensed = true;
+            display.productWasDispensed();
             tendered.clear();
         }
         return changeDue;
     }
 
     boolean tenderedIsEnough(Double amountTendered, Double price) {
+        boolean tenderedIsEnough = false;
         if (amountTendered >= price) {
             tenderedIsEnough = true;
         }
         return tenderedIsEnough;
+    }
+
+    void done() {
+        tendered.clear();
+        display.tenderedAmountChanged(0);
     }
 }

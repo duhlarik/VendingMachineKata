@@ -21,6 +21,14 @@ public class Display {
 
 
     public void tenderedAmountChanged(double newAmountTendered) {
-        message = AMOUNT_TENDERED + currencyFormat.format(newAmountTendered);
+        if (newAmountTendered > 0) {
+            message = AMOUNT_TENDERED + currencyFormat.format(newAmountTendered);
+        } else {
+            message = INSERT_COIN;
+        }
+    }
+
+    public void productWasDispensed() {
+        message = THANK_YOU;
     }
 }

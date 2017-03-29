@@ -206,4 +206,14 @@ public class VendingMachineTest {
         // ASSERT
         assertEquals(.10, changeDue, DELTA);
     }
+
+    @Test
+    public void amountTenderedGoesBackToZeroWhenDone() throws Exception {
+        InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
+        vendingMachine.insertCoin(quarter);
+
+        vendingMachine.done();
+
+        assertThat(vendingMachine.amountTendered(), is(0.0));
+    }
 }
