@@ -1,9 +1,13 @@
 package com.vendingmachine;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+
 
 public class VendingMachineTest {
 
@@ -12,7 +16,13 @@ public class VendingMachineTest {
 
     @Before
     public void setUp() {
-        vendingMachine = new VendingMachine();
+        vendingMachine = new VendingMachine(new Display());
+    }
+
+    @After
+    public void tearDown() {
+    List<Double> tenderedList = vendingMachine.getTendered();
+    tenderedList.clear();
     }
 
     @Test
@@ -21,7 +31,7 @@ public class VendingMachineTest {
         InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
 
         // ACT
-        Double value = vendingMachine.findValue(nickel);
+        Double value = vendingMachine.insertCoin(nickel);
 
         // ASSERT
         assertEquals(.05, value, DELTA);
@@ -34,13 +44,12 @@ public class VendingMachineTest {
         InsertedCoin dime = new InsertedCoin(2.268, 17.91);
 
         // ACT
-        Double value1 = vendingMachine.findValue(quarter);
-        Double value2 = vendingMachine.findValue(dime);
+        Double value1 = vendingMachine.insertCoin(quarter);
+        Double value2 = vendingMachine.insertCoin(dime);
 
         // ASSERT
         assertEquals(.25, value1, DELTA);
         assertEquals(.10, value2, DELTA);
-
     }
 
     @Test
@@ -48,16 +57,15 @@ public class VendingMachineTest {
         // ARRANGE
         InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
         InsertedCoin dime = new InsertedCoin(2.268, 17.91);
-        Double sumOfValues;
+        Double amountTendered;
 
         // ACT
-        vendingMachine.findValue(nickel);
-        vendingMachine.findValue(dime);
-        sumOfValues = vendingMachine.sumOfInsertedCoins();
+        vendingMachine.insertCoin(nickel);
+        vendingMachine.insertCoin(dime);
+        amountTendered = vendingMachine.amountTendered();
 
         // ASSERT
-        assertEquals(.15, sumOfValues, DELTA);
-
+        assertEquals(.15, amountTendered, DELTA);
     }
 
     @Test
@@ -66,32 +74,30 @@ public class VendingMachineTest {
         InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
         InsertedCoin dime = new InsertedCoin(2.268, 17.91);
         InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
-        Double sumOfValues;
+        Double amountTendered;
 
         // ACT
-        vendingMachine.findValue(nickel);
-        vendingMachine.findValue(dime);
-        vendingMachine.findValue(quarter);
-        sumOfValues = vendingMachine.sumOfInsertedCoins();
+        vendingMachine.insertCoin(nickel);
+        vendingMachine.insertCoin(dime);
+        vendingMachine.insertCoin(quarter);
+        amountTendered = vendingMachine.amountTendered();
 
         // ASSERT
-        assertEquals(.40, sumOfValues, DELTA);
-
+        assertEquals(.40, amountTendered, DELTA);
     }
 
     @Test
     public void insertingAnInvalidCoinReturnsZero() {
         // ARRANGE
         InsertedCoin penny = new InsertedCoin(2.500, 19.05);
-        Double sumOfValues;
+        Double amountTendered;
 
         // ACT
-        vendingMachine.findValue(penny);
-        sumOfValues = vendingMachine.sumOfInsertedCoins();
+        vendingMachine.insertCoin(penny);
+        amountTendered = vendingMachine.amountTendered();
 
         // ASSERT
-        assertEquals(.0, sumOfValues, DELTA);
-
+        assertEquals(.0, amountTendered, DELTA);
     }
 
     @Test
@@ -101,68 +107,82 @@ public class VendingMachineTest {
         InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
         InsertedCoin dime = new InsertedCoin(2.268, 17.91);
         InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
-        Double sumOfValues;
+        Double amountTendered;
 
         // ACT
-        vendingMachine.findValue(penny);
-        vendingMachine.findValue(nickel);
-        vendingMachine.findValue(dime);
-        vendingMachine.findValue(quarter);
-        sumOfValues = vendingMachine.sumOfInsertedCoins();
+        vendingMachine.insertCoin(penny);
+        vendingMachine.insertCoin(nickel);
+        vendingMachine.insertCoin(dime);
+        vendingMachine.insertCoin(quarter);
+        amountTendered = vendingMachine.amountTendered();
 
         // ASSERT
-        assertEquals(.40, sumOfValues, DELTA);
+        assertEquals(.40, amountTendered, DELTA);
     }
 
     @Test
-    public void insertingLessThanPriceOfProductReturnsInsertCoinsMessage() {
-        // ARRANGE
-        InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
-        InsertedCoin dime = new InsertedCoin(2.268, 17.91);
-        InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
+    public void selectingAProductAfterInsertingEnoughMoneyReturnsTrueForTenderedIsEnough() {
 
-        // ACT
-        vendingMachine.findValue(nickel);
-        vendingMachine.findValue(dime);
-        vendingMachine.findValue(quarter);
-        vendingMachine.sumOfInsertedCoins();
-        String message = vendingMachine.isItEnough(Products.CANDY);
-
-        // ASSERT
-        assertEquals("Insert Coins", message);
-
-    }
-
-    @Test
-    public void insertingExactPriceOfProductReturnsCorrectMessage() {
         // ARRANGE
         InsertedCoin quarter1 = new InsertedCoin(5.670, 24.26);
         InsertedCoin quarter2 = new InsertedCoin(5.670, 24.26);
+        vendingMachine.insertCoin(quarter1);
+        vendingMachine.insertCoin(quarter2);
 
         // ACT
-        vendingMachine.findValue(quarter2);
-        vendingMachine.findValue(quarter1);
-        vendingMachine.sumOfInsertedCoins();
-        String message = vendingMachine.isItEnough(Products.CHIPS);
+        Double amountTendered = vendingMachine.amountTendered();
+        Double price = Products.PRICE(Products.CHIPS);
 
         // ASSERT
-        assertEquals("Thank you", message);
+        assertEquals(true, vendingMachine.tenderedIsEnough(amountTendered, price));
     }
 
     @Test
-    public void insertingExactPriceOfProductReturnsCorrectChangeDueMessage() {
+    public void selectingAProductWithoutInsertingEnoughMoneyReturnsFalseForTenderedIsEnough() {
+
+        // ARRANGE
+        InsertedCoin quarter1 = new InsertedCoin(5.670, 24.26);
+        vendingMachine.insertCoin(quarter1);
+
+        // ACT
+        Double amountTendered = vendingMachine.amountTendered();
+        Double price = Products.PRICE(Products.CHIPS);
+
+        // ASSERT
+        assertEquals(false, vendingMachine.tenderedIsEnough(amountTendered, price));
+    }
+
+    @Test
+    public void dispensingAProductResetsAmountTenderedToZero() {
+
         // ARRANGE
         InsertedCoin quarter1 = new InsertedCoin(5.670, 24.26);
         InsertedCoin quarter2 = new InsertedCoin(5.670, 24.26);
+        vendingMachine.insertCoin(quarter1);
+        vendingMachine.insertCoin(quarter2);
 
         // ACT
-        vendingMachine.findValue(quarter2);
-        vendingMachine.findValue(quarter1);
-        vendingMachine.sumOfInsertedCoins();
-        String message = vendingMachine.thankYouAndChange(Products.CHIPS);
+        vendingMachine.dispenseProduct(Products.CHIPS);
 
         // ASSERT
-        assertEquals("Change due: 0.0", message);
+        assertEquals(0, vendingMachine.getTendered().size());
     }
 
+    @Test
+    public void dispensingAProductReturnsChangeDue() {
+
+        // ARRANGE
+        InsertedCoin quarter1 = new InsertedCoin(5.670, 24.26);
+        InsertedCoin quarter2 = new InsertedCoin(5.670, 24.26);
+        InsertedCoin quarter3 = new InsertedCoin(5.670, 24.26);
+        vendingMachine.insertCoin(quarter1);
+        vendingMachine.insertCoin(quarter2);
+        vendingMachine.insertCoin(quarter3);
+
+        // ACT
+        Double changeDue = vendingMachine.dispenseProduct(Products.CANDY);
+
+        // ASSERT
+        assertEquals(.10, changeDue, DELTA);
+    }
 }

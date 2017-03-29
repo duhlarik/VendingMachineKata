@@ -2,53 +2,77 @@ package com.vendingmachine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 
-class VendingMachine {
+class VendingMachine implements Observable {
 
-    private Double sumOfValues = 0.0;
-    private List<Double> valuesOfCoins = new ArrayList<>();
-    private String currentAmount = "$0.00";
-    private String message = "Insert Coins";
-    private double change = 0.0;
+    private Double amountTendered = 0.0;
+    private boolean tenderedIsEnough = false;
+    private List<Double> tendered = new ArrayList<>();
+    private List<Observer> vm = new ArrayList<>();
+//    private Observable productDispensed = new VendingMachine();
+    boolean productIsDispensed = false;
+    private Display display;
 
-    public VendingMachine(Double sumOfValues, List<Double> valuesOfCoins) {
-        this.sumOfValues = sumOfValues;
-        this.valuesOfCoins = valuesOfCoins;
+    public VendingMachine(Display display) {
+        this.display = display;
     }
 
-    public VendingMachine() {
+    List<Double> getTendered() {
+        return tendered;
     }
 
-    Double findValue(InsertedCoin insertedCoin) {
+    @Override
+    public void addObserver(Observer o) {
+        vm.add(o);
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+        vm.remove(o);
+    }
+
+    @Override
+    public void notifyObserver() {
+//        DisplayObserver displayObserver = new DisplayObserver(productDispensed);
+//        if (productIsDispensed) {
+//            displayObserver.update();
+//        }
+    }
+
+    Double insertCoin(InsertedCoin insertedCoin) {
         Double value = insertedCoin.getCoinValue(insertedCoin);
         if (value != -1.0) {
-            valuesOfCoins.add(value);
+            tendered.add(value);
             return value;
         } else {
             return 0.0;
         }
     }
 
-    double sumOfInsertedCoins() {
-        valuesOfCoins.forEach((Double values) -> {
-            sumOfValues += values;
-            currentAmount = String.valueOf(sumOfValues);
-        });
-        return sumOfValues;
+    Double amountTendered() {
+        tendered.forEach(values ->
+            amountTendered += values
+        );
+        return amountTendered;
     }
 
-    String isItEnough(Products product) {
-        if (sumOfValues >= Products.PRICE(product)) {
-            thankYouAndChange(product);
-        } else message = "Insert Coins";
-        return message;
+    Double dispenseProduct(Products product) {
+        amountTendered = amountTendered();
+        Double price = Products.PRICE(product);
+        Double changeDue = 0.00;
+        if (tenderedIsEnough(amountTendered, price)) {
+            changeDue = amountTendered - price;
+            productIsDispensed = true;
+            tendered.clear();
+        }
+        return changeDue;
     }
 
-    String thankYouAndChange(Products product) {
-        message = "Thank you";
-        sumOfValues -= Products.PRICE(product);
-        change = sumOfValues;
-        currentAmount = String.valueOf("Change due: " + change);
-        return currentAmount;
+    boolean tenderedIsEnough(Double amountTendered, Double price) {
+        if (amountTendered >= price) {
+            tenderedIsEnough = true;
+        }
+        return tenderedIsEnough;
     }
 }

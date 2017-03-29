@@ -4,7 +4,6 @@ public class InsertedCoin {
 
     private double mass;
     private double diameter;
-    private double coinValue;
 
     InsertedCoin(double mass, double diameter) {
         this.mass = mass;
@@ -19,11 +18,8 @@ public class InsertedCoin {
         return diameter;
     }
 
-    public void setCoinValue(double coinValue) {
-        this.coinValue = coinValue;
-    }
 
     double getCoinValue(InsertedCoin insertedCoin) {
-        return coinValue = Coin.VALUE(insertedCoin);
+        return CoinAppraiser.VALUE(insertedCoin);
     }
 }

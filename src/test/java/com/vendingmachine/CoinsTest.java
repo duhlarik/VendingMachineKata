@@ -13,7 +13,7 @@ public class CoinsTest {
         // ARRANGE
         boolean coinIsValid = false;
         InsertedCoin penny = new InsertedCoin(2.500, 19.05);
-        double value = Coin.VALUE(penny);
+        double value = CoinAppraiser.VALUE(penny);
 
         // ACT
         if (value != -1) {
@@ -29,7 +29,7 @@ public class CoinsTest {
         // ARRANGE
         boolean coinIsValid = false;
         InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
-        double value = Coin.VALUE(quarter);
+        double value = CoinAppraiser.VALUE(quarter);
 
         // ACT
         if (value != -1) {
@@ -46,11 +46,10 @@ public class CoinsTest {
         InsertedCoin quarter = new InsertedCoin(5.670, 24.26);
 
         // ACT
-        double value = Coin.VALUE(quarter);
+        double value = CoinAppraiser.VALUE(quarter);
 
 
         // ASSERT
         assertEquals(0.25d, value, DELTA);
     }
-
 }

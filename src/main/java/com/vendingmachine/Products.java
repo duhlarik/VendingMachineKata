@@ -12,9 +12,6 @@ public enum Products {
     }
 
     public static double PRICE(Products product) {
-            if (product == Products.valueOf(String.valueOf(product))) {
                 return product.PRICE;
-        }
-        return -1.0;
     }
 }
