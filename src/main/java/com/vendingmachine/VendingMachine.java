@@ -6,11 +6,10 @@ import java.util.Observer;
 
 class VendingMachine implements Observable {
 
-    private Double amountTendered = 0.0;
     private boolean tenderedIsEnough = false;
     private List<Double> tendered = new ArrayList<>();
     private List<Observer> vm = new ArrayList<>();
-//    private Observable productDispensed = new VendingMachine();
+    //    private Observable productDispensed = new VendingMachine();
     boolean productIsDispensed = false;
     private Display display;
 
@@ -44,21 +43,23 @@ class VendingMachine implements Observable {
         Double value = insertedCoin.getCoinValue(insertedCoin);
         if (value != -1.0) {
             tendered.add(value);
+            display.tenderedAmountChanged(amountTendered());
             return value;
         } else {
             return 0.0;
         }
     }
 
-    Double amountTendered() {
-        tendered.forEach(values ->
-            amountTendered += values
-        );
+    double amountTendered() {
+        double amountTendered = 0.0;
+        for (double value : tendered) {
+            amountTendered += value;
+        }
         return amountTendered;
     }
 
     Double dispenseProduct(Products product) {
-        amountTendered = amountTendered();
+        double amountTendered = amountTendered();
         Double price = Products.PRICE(product);
         Double changeDue = 0.00;
         if (tenderedIsEnough(amountTendered, price)) {

@@ -1,5 +1,7 @@
 package com.vendingmachine;
 
+import java.text.DecimalFormat;
+
 public class Display {
 
     final String INSERT_COIN = "INSERT COIN";
@@ -11,11 +13,14 @@ public class Display {
     final String EXACT_CHANGE = "EXACT CHANGE ONLY";
 
     String message = INSERT_COIN;
+    DecimalFormat currencyFormat = new DecimalFormat("$0.00");
 
     String getMessage() {
         return message;
     }
 
 
-
+    public void tenderedAmountChanged(double newAmountTendered) {
+        message = AMOUNT_TENDERED + currencyFormat.format(newAmountTendered);
+    }
 }

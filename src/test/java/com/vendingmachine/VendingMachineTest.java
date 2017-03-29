@@ -6,6 +6,10 @@ import org.junit.Test;
 
 import java.util.List;
 
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 
@@ -66,6 +70,23 @@ public class VendingMachineTest {
 
         // ASSERT
         assertEquals(.15, amountTendered, DELTA);
+    }
+
+    @Test
+    public void amountTenderedAlwaysReturnsTheSameNumber() throws Exception {
+        // ARRANGE
+        InsertedCoin nickel = new InsertedCoin(5.000, 21.21);
+        InsertedCoin dime = new InsertedCoin(2.268, 17.91);
+        Double amountTendered;
+
+        // ACT
+        vendingMachine.insertCoin(nickel);
+        vendingMachine.insertCoin(dime);
+
+        // ASSERT
+        double firstAmount = vendingMachine.amountTendered();
+        double secondAmount = vendingMachine.amountTendered();
+        assertThat(firstAmount, is(equalTo(secondAmount)));
     }
 
     @Test

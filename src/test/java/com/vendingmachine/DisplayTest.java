@@ -1,7 +1,6 @@
 package com.vendingmachine;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -28,7 +27,6 @@ public class DisplayTest {
     }
 
     @Test
-    @Ignore
     public void showsTheAmountTenderedAsYouPutMoneyInTheVendingMachine() throws Exception {
         vendingMachine.insertCoin(QUARTER);
 
