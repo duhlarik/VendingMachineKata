@@ -2,7 +2,7 @@ package com.vendingmachine;
 
 import java.text.DecimalFormat;
 
-public class Display {
+public class Display implements VendingMachineObserver {
 
     final String INSERT_COIN = "INSERT COIN";
     final String THANK_YOU = "THANK YOU";
@@ -20,6 +20,7 @@ public class Display {
     }
 
 
+    @Override
     public void tenderedAmountChanged(double newAmountTendered) {
         if (newAmountTendered > 0) {
             message = AMOUNT_TENDERED + currencyFormat.format(newAmountTendered);
@@ -28,10 +29,12 @@ public class Display {
         }
     }
 
+    @Override
     public void productWasDispensed() {
         message = THANK_YOU;
     }
 
+    @Override
     public void notEnoughTendered(double price) {
         message = PRICE + currencyFormat.format(price);
     }

@@ -16,7 +16,8 @@ public class DisplayTest {
     @Before
     public void setUp() {
         display = new Display();
-        vendingMachine = new VendingMachine(display);
+        vendingMachine = new VendingMachine();
+        vendingMachine.addObserver(display);
     }
 
     @Test

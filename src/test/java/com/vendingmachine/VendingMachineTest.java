@@ -20,7 +20,7 @@ public class VendingMachineTest {
 
     @Before
     public void setUp() {
-        vendingMachine = new VendingMachine(new Display());
+        vendingMachine = new VendingMachine();
     }
 
     @After

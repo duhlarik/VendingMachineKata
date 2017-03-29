@@ -4,45 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 
-class VendingMachine implements Observable {
+class VendingMachine {
 
     private List<Double> tendered = new ArrayList<>();
     private List<Observer> vm = new ArrayList<>();
     //    private Observable productDispensed = new VendingMachine();
     boolean productIsDispensed = false;
-    private Display display;
+    private List<VendingMachineObserver> observers = new ArrayList<>();
 
-    public VendingMachine(Display display) {
-        this.display = display;
-    }
 
     List<Double> getTendered() {
         return tendered;
-    }
-
-    @Override
-    public void addObserver(Observer o) {
-        vm.add(o);
-    }
-
-    @Override
-    public void removeObserver(Observer o) {
-        vm.remove(o);
-    }
-
-    @Override
-    public void notifyObserver() {
-//        DisplayObserver displayObserver = new DisplayObserver(productDispensed);
-//        if (productIsDispensed) {
-//            displayObserver.update();
-//        }
     }
 
     Double insertCoin(InsertedCoin insertedCoin) {
         Double value = insertedCoin.getCoinValue(insertedCoin);
         if (value != -1.0) {
             tendered.add(value);
-            display.tenderedAmountChanged(amountTendered());
+            observers.forEach(observer -> observer.tenderedAmountChanged(amountTendered()));
             return value;
         } else {
             return 0.0;
@@ -64,10 +43,10 @@ class VendingMachine implements Observable {
         if (tenderedIsEnough(amountTendered, price)) {
             changeDue = amountTendered - price;
             productIsDispensed = true;
-            display.productWasDispensed();
+            observers.forEach(observer -> observer.productWasDispensed());
             tendered.clear();
         } else {
-            display.notEnoughTendered(price);
+            observers.forEach(observer -> observer.notEnoughTendered(price));
         }
         return changeDue;
     }
@@ -82,6 +61,10 @@ class VendingMachine implements Observable {
 
     void done() {
         tendered.clear();
-        display.tenderedAmountChanged(0);
+        observers.forEach(observer -> observer.tenderedAmountChanged(0));
+    }
+
+    void addObserver(VendingMachineObserver observer){
+        observers.add(observer);
     }
 }
