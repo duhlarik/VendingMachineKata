@@ -12,6 +12,10 @@ class VendingMachine {
         return tendered;
     }
 
+    void addObserver(VendingMachineObserver observer){
+        observers.add(observer);
+    }
+
     Double insertCoin(InsertedCoin insertedCoin) {
         Double value = insertedCoin.getCoinValue(insertedCoin);
         if (value != -1.0) {
@@ -60,13 +64,10 @@ class VendingMachine {
         observers.forEach(observer -> observer.tenderedAmountChanged(0));
     }
 
-    void addObserver(VendingMachineObserver observer){
-        observers.add(observer);
-    }
-
-    public double returnCoins() {
+    double returnCoins() {
         double amountTendered = amountTendered();
         tendered.clear();
+        observers.forEach(observer -> observer.tenderedAmountChanged(0));
         return amountTendered;
     }
 }

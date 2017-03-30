@@ -10,7 +10,6 @@ public class CoinsTest {
     private static final InsertedCoin PENNY = new InsertedCoin(2.500, 19.05);
     private static final InsertedCoin QUARTER = new InsertedCoin(5.670, 24.26);
 
-
     @Test
     public void ifInsertedCoinIsNotAValidCoinReturnFalse() {
         // ARRANGE

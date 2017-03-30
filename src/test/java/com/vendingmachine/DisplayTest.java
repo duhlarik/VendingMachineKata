@@ -42,7 +42,6 @@ public class DisplayTest {
     public void showsThankYouWhenProductIsDispensed() throws Exception {
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
-
         vendingMachine.dispenseProduct(Products.CHIPS);
 
         assertThat(display.getMessage(), is("THANK YOU $0.00"));
@@ -52,17 +51,15 @@ public class DisplayTest {
     public void goesBackToInsertCoinWhenTransactionIsComplete() throws Exception {
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
-
         vendingMachine.dispenseProduct(Products.CHIPS);
-
         vendingMachine.done();
+
         assertThat(display.getMessage(), is("INSERT COIN $0.00"));
     }
 
     @Test
     public void showsThePriceWhenInsufficientTenderedAmount() throws Exception {
         vendingMachine.insertCoin(QUARTER);
-
         vendingMachine.dispenseProduct(Products.CHIPS);
 
         assertThat(display.getMessage(), is("PRICE: $0.50"));
