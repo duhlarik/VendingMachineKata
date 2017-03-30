@@ -26,13 +26,17 @@ public class Inventory implements VendingMachineObserver {
     public void notEnoughTendered(double price) {
     }
 
+    @Override
+    public void soldOut(Products product, double amountTendered) {
+    }
+
     void increaseInventory(Products product, Integer inventoryAdded) {
         int currentInventory = getInventory(product);
         Integer newInventory = currentInventory + inventoryAdded;
         inventory.replace(product, newInventory);
     }
 
-    void decreaseInventory(Products product) {
+    private void decreaseInventory(Products product) {
         int currentInventory = getInventory(product);
         Integer newInventory = currentInventory - 1;
         inventory.replace(product, newInventory);

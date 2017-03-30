@@ -44,7 +44,6 @@ public class InventoryTest {
 
         // ASSERT
         assertEquals(4, inventory.getInventory(Products.CHIPS));
-
     }
 
 }

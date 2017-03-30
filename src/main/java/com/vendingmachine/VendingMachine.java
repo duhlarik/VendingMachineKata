@@ -8,6 +8,8 @@ class VendingMachine {
     private List<Double> tendered = new ArrayList<>();
     private List<VendingMachineObserver> observers = new ArrayList<>();
 
+    private Inventory productInventory = new Inventory();
+
     List<Double> getTendered() {
         return tendered;
     }
@@ -34,17 +36,18 @@ class VendingMachine {
         }
         return amountTendered;
     }
-
     double dispenseProduct(Products product) {
         double amountTendered = amountTendered();
         double price = Products.PRICE(product);
         double changeDue = 0.00;
-        boolean productIsDispensed = false;
         if (tenderedIsEnough(amountTendered, price)) {
+//            if (productInventory.getInventory(product)>0){
             changeDue = amountTendered - price;
-            productIsDispensed = true;
             observers.forEach(observer -> observer.productWasDispensed(product));
             tendered.clear();
+//            } else {
+//                observers.forEach(observer -> observer.soldOut(product, amountTendered));
+//            }
         } else {
             observers.forEach(observer -> observer.notEnoughTendered(price));
         }

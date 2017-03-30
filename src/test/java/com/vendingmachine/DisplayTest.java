@@ -12,12 +12,15 @@ public class DisplayTest {
 
     private VendingMachine vendingMachine;
     private Display display;
+    private Inventory inventory;
 
     @Before
     public void setUp() {
         display = new Display();
+        inventory = new Inventory();
         vendingMachine = new VendingMachine();
         vendingMachine.addObserver(display);
+        vendingMachine.addObserver(inventory);
     }
 
     @Test
@@ -40,6 +43,7 @@ public class DisplayTest {
 
     @Test
     public void showsThankYouWhenProductIsDispensed() throws Exception {
+        inventory.increaseInventory(Products.CHIPS, 5);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.dispenseProduct(Products.CHIPS);
@@ -63,5 +67,13 @@ public class DisplayTest {
         vendingMachine.dispenseProduct(Products.CHIPS);
 
         assertThat(display.getMessage(), is("PRICE: $0.50"));
+    }
+    @Test
+    public void showsSoldOutAndAmountTenderedWhenProductIsSoldOut() throws Exception {
+        vendingMachine.insertCoin(QUARTER);
+        vendingMachine.insertCoin(QUARTER);
+        vendingMachine.dispenseProduct(Products.CHIPS);
+
+        assertThat(display.getMessage(), is("SOLD OUT: $0.50"));
     }
 }

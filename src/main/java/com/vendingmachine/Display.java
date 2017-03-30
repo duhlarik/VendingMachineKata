@@ -8,7 +8,7 @@ public class Display implements VendingMachineObserver {
     private final String THANK_YOU = "THANK YOU ";
     private final String PRICE = "PRICE: ";
     private final String AMOUNT_TENDERED = "AMOUNT TENDERED: ";
-    private final String SOLD_OUT = "SOLD OUT ";
+    private final String SOLD_OUT = "SOLD OUT: ";
     private final String EXACT_CHANGE = "EXACT CHANGE ONLY ";
     private final String ZERO = "$0.00";
 
@@ -41,5 +41,11 @@ public class Display implements VendingMachineObserver {
     public void notEnoughTendered(double price) {
         message = PRICE;
         moneyMessage = currencyFormat.format(price);
+    }
+
+    @Override
+    public void soldOut(Products product, double amountTendered) {
+        message = SOLD_OUT;
+        moneyMessage = currencyFormat.format(amountTendered);
     }
 }
