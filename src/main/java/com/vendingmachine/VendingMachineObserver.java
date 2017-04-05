@@ -4,9 +4,9 @@ public interface VendingMachineObserver {
 
     void tenderedAmountChanged(double newAmountTendered);
 
-    void productWasDispensed(Products product);
+    void productWasDispensed(Products product, int inventoryChange);
 
     void notEnoughTendered(double price);
 
-    void soldOut(Products product, double amountTendered);
+    void soldOut(double amountTendered);
 }

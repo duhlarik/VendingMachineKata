@@ -1,17 +1,12 @@
 package com.vendingmachine;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class VendingMachineTest {
 
@@ -22,21 +17,19 @@ public class VendingMachineTest {
 
     private static final double DELTA = 1e-15;
     private VendingMachine vendingMachine;
-    private Inventory inventory;
+    private Display display;
+    private InventoryManager inventoryManager;
 
     @Before
     public void setUp() {
         vendingMachine = new VendingMachine();
-        Display display = new Display();
-        inventory = new Inventory();
+        display = new Display();
+        inventoryManager = new InventoryManager();
         vendingMachine.addObserver(display);
-        vendingMachine.addObserver(inventory);
-    }
-
-    @After
-    public void tearDown() {
-    List<Double> tenderedList = vendingMachine.getTendered();
-    tenderedList.clear();
+        vendingMachine.addObserver(inventoryManager);
+        Inventory.updateInventory(Products.CANDY, 0);
+        Inventory.updateInventory(Products.CHIPS, 0);
+        Inventory.updateInventory(Products.COLA, 0);
     }
 
     @Test
@@ -66,7 +59,7 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(DIME);
 
         // ASSERT
-        assertEquals(.15, vendingMachine.amountTendered(), DELTA);
+        assertEquals(.15, vendingMachine.getAmountTendered(), DELTA);
     }
 
     @Test
@@ -74,8 +67,8 @@ public class VendingMachineTest {
         // ACT
         vendingMachine.insertCoin(NICKEL);
         vendingMachine.insertCoin(DIME);
-        double firstAmount = vendingMachine.amountTendered();
-        double secondAmount = vendingMachine.amountTendered();
+        double firstAmount = vendingMachine.getAmountTendered();
+        double secondAmount = vendingMachine.getAmountTendered();
 
         // ASSERT
         assertThat(firstAmount, is(equalTo(secondAmount)));
@@ -89,7 +82,7 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(QUARTER);
 
         // ASSERT
-        assertEquals(.40, vendingMachine.amountTendered(), DELTA);
+        assertEquals(.40, vendingMachine.getAmountTendered(), DELTA);
     }
 
     @Test
@@ -98,7 +91,7 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(PENNY);
 
         // ASSERT
-        assertEquals(.0, vendingMachine.amountTendered(), DELTA);
+        assertEquals(.0, vendingMachine.getAmountTendered(), DELTA);
     }
 
     @Test
@@ -110,7 +103,7 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(QUARTER);
 
         // ASSERT
-        assertEquals(.40, vendingMachine.amountTendered(), DELTA);
+        assertEquals(.40, vendingMachine.getAmountTendered(), DELTA);
     }
 
     @Test
@@ -120,9 +113,9 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(QUARTER);
 
         // ACT
-        Double amountTendered = vendingMachine.amountTendered();
+        Double amountTendered = vendingMachine.getAmountTendered();
         Double price = Products.PRICE(Products.CHIPS);
-        boolean tenderedIsEnough = vendingMachine.tenderedIsEnough(amountTendered, price);
+        boolean tenderedIsEnough = vendingMachine.amountTenderedIsEnough(amountTendered, price);
 
         // ASSERT
         assertTrue(tenderedIsEnough);
@@ -134,9 +127,9 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(QUARTER);
 
         // ACT
-        Double amountTendered = vendingMachine.amountTendered();
+        Double amountTendered = vendingMachine.getAmountTendered();
         Double price = Products.PRICE(Products.CHIPS);
-        boolean tenderedIsEnough = vendingMachine.tenderedIsEnough(amountTendered, price);
+        boolean tenderedIsEnough = vendingMachine.amountTenderedIsEnough(amountTendered, price);
 
         // ASSERT
         assertFalse(tenderedIsEnough);
@@ -145,7 +138,7 @@ public class VendingMachineTest {
     @Test
     public void dispensingAProductResetsAmountTenderedToZero() {
         // ARRANGE
-        inventory.increaseInventory(Products.CHIPS, 5);
+        inventoryManager.manageInventory(Products.CHIPS, 2);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
 
@@ -159,12 +152,13 @@ public class VendingMachineTest {
     @Test
     public void dispensingAProductReturnsChangeDue() {
         // ARRANGE
+        inventoryManager.manageInventory(Products.CANDY, 2);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
 
         // ASSERT
-        assertEquals(.10, vendingMachine.dispenseProduct(Products.CANDY), DELTA);
+        assertEquals(.10, vendingMachine.returnChange(Products.CANDY.PRICE), DELTA);
     }
 
     @Test
@@ -176,7 +170,7 @@ public class VendingMachineTest {
         vendingMachine.done();
 
         // ASSERT
-        assertThat(vendingMachine.amountTendered(), is(0.0));
+        assertThat(vendingMachine.getAmountTendered(), is(0.0));
     }
 
     @Test

@@ -12,20 +12,23 @@ public class DisplayTest {
 
     private VendingMachine vendingMachine;
     private Display display;
-    private Inventory inventory;
+    private InventoryManager inventoryManager;
 
     @Before
     public void setUp() {
         display = new Display();
-        inventory = new Inventory();
+        inventoryManager = new InventoryManager();
         vendingMachine = new VendingMachine();
         vendingMachine.addObserver(display);
-        vendingMachine.addObserver(inventory);
+        vendingMachine.addObserver(inventoryManager);
+        Inventory.updateInventory(Products.CANDY, 0);
+        Inventory.updateInventory(Products.CHIPS, 0);
+        Inventory.updateInventory(Products.COLA, 0);
     }
 
     @Test
     public void showsInsertCoinWhenNoMoneyTendered() throws Exception {
-        assertThat(vendingMachine.amountTendered(), is(0.0));
+        assertThat(vendingMachine.getAmountTendered(), is(0.0));
 
         assertThat(display.getMessage(), is ("INSERT COIN $0.00"));
     }
@@ -43,7 +46,7 @@ public class DisplayTest {
 
     @Test
     public void showsThankYouWhenProductIsDispensed() throws Exception {
-        inventory.increaseInventory(Products.CHIPS, 5);
+        inventoryManager.manageInventory(Products.CHIPS, 5);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.dispenseProduct(Products.CHIPS);
@@ -63,6 +66,7 @@ public class DisplayTest {
 
     @Test
     public void showsThePriceWhenInsufficientTenderedAmount() throws Exception {
+        inventoryManager.manageInventory(Products.CHIPS, 5);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.dispenseProduct(Products.CHIPS);
 

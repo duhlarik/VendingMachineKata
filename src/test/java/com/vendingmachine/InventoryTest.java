@@ -14,28 +14,31 @@ public class InventoryTest {
 
     private static final double DELTA = 1e-15;
     private VendingMachine vendingMachine;
-    private Inventory inventory;
+    private InventoryManager inventoryManager;
 
     @Before
     public void setUp() {
-        inventory = new Inventory();
+        inventoryManager = new InventoryManager();
         vendingMachine = new VendingMachine();
-        vendingMachine.addObserver(inventory);
+        vendingMachine.addObserver(inventoryManager);
+        Inventory.updateInventory(Products.CANDY, 0);
+        Inventory.updateInventory(Products.CHIPS, 0);
+        Inventory.updateInventory(Products.COLA, 0);
     }
 
     @Test
     public void addsInventoryToProductInventory() {
         // ARRANGE
-        inventory.increaseInventory(Products.COLA, 10);
+        inventoryManager.manageInventory(Products.COLA, 10);
 
         // ASSERT
-        assertEquals(10, inventory.getInventory(Products.COLA));
+        assertEquals(10, Inventory.getInventory(Products.COLA));
     }
 
     @Test
     public void decrementsProductInventoryByOneWhenProductIsDispensed() throws Exception {
         // ARRANGE
-        inventory.increaseInventory(Products.CHIPS, 5);
+        inventoryManager.manageInventory(Products.CHIPS, 5);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
 
@@ -43,7 +46,7 @@ public class InventoryTest {
         vendingMachine.dispenseProduct(Products.CHIPS);
 
         // ASSERT
-        assertEquals(4, inventory.getInventory(Products.CHIPS));
+        assertEquals(4, Inventory.getInventory(Products.CHIPS));
     }
 
 }

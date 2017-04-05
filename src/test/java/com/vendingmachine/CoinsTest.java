@@ -15,7 +15,7 @@ public class CoinsTest {
         // ARRANGE
         boolean coinIsValid = false;
         InsertedCoin penny = PENNY;
-        double value = CoinAppraiser.VALUE(penny);
+        double value = CoinAppraiser.getValue(penny);
 
         // ACT
         if (value != -1) {
@@ -31,7 +31,7 @@ public class CoinsTest {
         // ARRANGE
         boolean coinIsValid = false;
         InsertedCoin quarter = QUARTER;
-        double value = CoinAppraiser.VALUE(quarter);
+        double value = CoinAppraiser.getValue(quarter);
 
         // ACT
         if (value != -1) {
@@ -48,7 +48,7 @@ public class CoinsTest {
         InsertedCoin quarter = QUARTER;
 
         // ACT
-        double value = CoinAppraiser.VALUE(quarter);
+        double value = CoinAppraiser.getValue(quarter);
 
 
         // ASSERT

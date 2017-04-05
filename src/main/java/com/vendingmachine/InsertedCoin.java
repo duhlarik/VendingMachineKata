@@ -20,6 +20,6 @@ public class InsertedCoin {
 
 
     double getCoinValue(InsertedCoin insertedCoin) {
-        return CoinAppraiser.VALUE(insertedCoin);
+        return CoinAppraiser.getValue(insertedCoin);
     }
 }

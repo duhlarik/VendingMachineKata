@@ -15,7 +15,7 @@ public enum CoinAppraiser {
         this.VALUE = VALUE;
     }
 
-    public static double VALUE(InsertedCoin insertedCoin) {
+    public static double getValue(InsertedCoin insertedCoin) {
         for(CoinAppraiser c : CoinAppraiser.values()) {
             if (c.MASS == insertedCoin.getMass() && c.DIAMETER == insertedCoin.getDiameter()) {
                 return c.VALUE;
