@@ -1,5 +1,6 @@
 package com.vendingmachine;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,18 +19,22 @@ public class VendingMachineTest {
     private static final double DELTA = 1e-15;
     private VendingMachine vendingMachine;
     private Display display;
-    private InventoryManager inventoryManager;
+    private ProductInventoryManager productInventoryManager;
 
     @Before
     public void setUp() {
         vendingMachine = new VendingMachine();
         display = new Display();
-        inventoryManager = new InventoryManager();
+        productInventoryManager = new ProductInventoryManager();
         vendingMachine.addObserver(display);
-        vendingMachine.addObserver(inventoryManager);
-        Inventory.updateInventory(Products.CANDY, 0);
-        Inventory.updateInventory(Products.CHIPS, 0);
-        Inventory.updateInventory(Products.COLA, 0);
+        vendingMachine.addObserver(productInventoryManager);
+    }
+
+    @After
+    public void tearDown() {
+        ProductInventory.updateInventory(Product.CANDY, 0);
+        ProductInventory.updateInventory(Product.CHIPS, 0);
+        ProductInventory.updateInventory(Product.COLA, 0);
     }
 
     @Test
@@ -64,9 +69,11 @@ public class VendingMachineTest {
 
     @Test
     public void amountTenderedAlwaysReturnsTheSameNumber() throws Exception {
-        // ACT
+        // ARRANGE
         vendingMachine.insertCoin(NICKEL);
         vendingMachine.insertCoin(DIME);
+
+        // ACT
         double firstAmount = vendingMachine.getAmountTendered();
         double secondAmount = vendingMachine.getAmountTendered();
 
@@ -76,7 +83,7 @@ public class VendingMachineTest {
 
     @Test
     public void insertingThreeCoinsReturnsTheSumOfAllCoins() {
-        // ACT
+        // ARRANGE
         vendingMachine.insertCoin(NICKEL);
         vendingMachine.insertCoin(DIME);
         vendingMachine.insertCoin(QUARTER);
@@ -87,7 +94,7 @@ public class VendingMachineTest {
 
     @Test
     public void insertingAnInvalidCoinReturnsZero() {
-        // ACT
+        // ARRANGE
         vendingMachine.insertCoin(PENNY);
 
         // ASSERT
@@ -96,7 +103,7 @@ public class VendingMachineTest {
 
     @Test
     public void insertingAnInvalidCoinWithThreeValidCoinsReturnsTheSumOfTheValidCoins() {
-        // ACT
+        // ARRANGE
         vendingMachine.insertCoin(PENNY);
         vendingMachine.insertCoin(NICKEL);
         vendingMachine.insertCoin(DIME);
@@ -111,10 +118,10 @@ public class VendingMachineTest {
         // ARRANGE
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
+        Double amountTendered = vendingMachine.getAmountTendered();
+        Double price = Product.PRICE(Product.CHIPS);
 
         // ACT
-        Double amountTendered = vendingMachine.getAmountTendered();
-        Double price = Products.PRICE(Products.CHIPS);
         boolean tenderedIsEnough = vendingMachine.amountTenderedIsEnough(amountTendered, price);
 
         // ASSERT
@@ -125,10 +132,10 @@ public class VendingMachineTest {
     public void selectingAProductWithoutInsertingEnoughMoneyReturnsFalseForTenderedIsEnough() {
         // ARRANGE
         vendingMachine.insertCoin(QUARTER);
+        Double amountTendered = vendingMachine.getAmountTendered();
+        Double price = Product.PRICE(Product.CHIPS);
 
         // ACT
-        Double amountTendered = vendingMachine.getAmountTendered();
-        Double price = Products.PRICE(Products.CHIPS);
         boolean tenderedIsEnough = vendingMachine.amountTenderedIsEnough(amountTendered, price);
 
         // ASSERT
@@ -138,27 +145,41 @@ public class VendingMachineTest {
     @Test
     public void dispensingAProductResetsAmountTenderedToZero() {
         // ARRANGE
-        inventoryManager.manageInventory(Products.CHIPS, 2);
+        productInventoryManager.manageInventory(Product.CHIPS, 2);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
 
         // ACT
-        vendingMachine.dispenseProduct(Products.CHIPS);
+        vendingMachine.dispenseProduct(Product.CHIPS);
 
         // ASSERT
         assertEquals(0, vendingMachine.getTendered().size());
     }
 
     @Test
-    public void dispensingAProductReturnsChangeDue() {
+    public void returnChangeReturnsCorrectValueForChange() {
         // ARRANGE
-        inventoryManager.manageInventory(Products.CANDY, 2);
+        productInventoryManager.manageInventory(Product.CANDY, 2);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
 
         // ASSERT
-        assertEquals(.10, vendingMachine.returnChange(Products.CANDY.PRICE), DELTA);
+        assertEquals(.10, vendingMachine.returnChange(Product.CANDY.PRICE), DELTA);
+    }
+
+    @Test
+    public void returnChangeReturnsCorrectCoin() {
+        // ARRANGE
+        productInventoryManager.manageInventory(Product.CANDY, 2);
+        vendingMachine.insertCoin(QUARTER);
+        vendingMachine.insertCoin(QUARTER);
+        vendingMachine.insertCoin(QUARTER);
+        double change = vendingMachine.returnChange(Product.CANDY.PRICE);
+
+        // ASSERT
+        assertEquals("DIME", CoinsForChangeDue.getNameOfCoin(change));
+
     }
 
     @Test

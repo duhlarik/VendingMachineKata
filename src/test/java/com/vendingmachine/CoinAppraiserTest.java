@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class CoinsTest {
+public class CoinAppraiserTest {
 
     private static final double DELTA = 1e-15;
     private static final InsertedCoin PENNY = new InsertedCoin(2.500, 19.05);
@@ -14,8 +14,7 @@ public class CoinsTest {
     public void ifInsertedCoinIsNotAValidCoinReturnFalse() {
         // ARRANGE
         boolean coinIsValid = false;
-        InsertedCoin penny = PENNY;
-        double value = CoinAppraiser.getValue(penny);
+        double value = CoinAppraiser.getValue(PENNY);
 
         // ACT
         if (value != -1) {
@@ -30,8 +29,7 @@ public class CoinsTest {
     public void ifInsertedCoinIsAValidCoinReturnTrue() {
         // ARRANGE
         boolean coinIsValid = false;
-        InsertedCoin quarter = QUARTER;
-        double value = CoinAppraiser.getValue(quarter);
+        double value = CoinAppraiser.getValue(QUARTER);
 
         // ACT
         if (value != -1) {
@@ -44,12 +42,8 @@ public class CoinsTest {
 
     @Test
     public void massAndDiameterOfQuarterShouldReturnTwentyFiveCents() {
-        // ARRANGE
-        InsertedCoin quarter = QUARTER;
-
         // ACT
-        double value = CoinAppraiser.getValue(quarter);
-
+        double value = CoinAppraiser.getValue(QUARTER);
 
         // ASSERT
         assertEquals(0.25d, value, DELTA);

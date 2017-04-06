@@ -1,17 +1,17 @@
 package com.vendingmachine;
 
-public enum Products {
+public enum Product {
     COLA (1.00),
     CHIPS (.50),
     CANDY (.65);
 
     final double PRICE;
 
-    Products(double PRICE) {
+    Product(double PRICE) {
         this.PRICE = PRICE;
     }
 
-    public static double PRICE(Products product) {
+    public static double PRICE(Product product) {
                 return product.PRICE;
     }
 }

@@ -1,11 +1,12 @@
 package com.vendingmachine;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class InventoryTest {
+public class ProductInventoryTest {
 
     private static final InsertedCoin QUARTER = new InsertedCoin(5.670, 24.26);
     private static final InsertedCoin DIME = new InsertedCoin(2.268, 17.91);
@@ -14,39 +15,43 @@ public class InventoryTest {
 
     private static final double DELTA = 1e-15;
     private VendingMachine vendingMachine;
-    private InventoryManager inventoryManager;
+    private ProductInventoryManager productInventoryManager;
 
     @Before
     public void setUp() {
-        inventoryManager = new InventoryManager();
+        productInventoryManager = new ProductInventoryManager();
         vendingMachine = new VendingMachine();
-        vendingMachine.addObserver(inventoryManager);
-        Inventory.updateInventory(Products.CANDY, 0);
-        Inventory.updateInventory(Products.CHIPS, 0);
-        Inventory.updateInventory(Products.COLA, 0);
+        vendingMachine.addObserver(productInventoryManager);
+    }
+
+    @After
+    public void tearDown() {
+        ProductInventory.updateInventory(Product.CANDY, 0);
+        ProductInventory.updateInventory(Product.CHIPS, 0);
+        ProductInventory.updateInventory(Product.COLA, 0);
     }
 
     @Test
     public void addsInventoryToProductInventory() {
         // ARRANGE
-        inventoryManager.manageInventory(Products.COLA, 10);
+        productInventoryManager.manageInventory(Product.COLA, 10);
 
         // ASSERT
-        assertEquals(10, Inventory.getInventory(Products.COLA));
+        assertEquals(10, ProductInventory.getInventory(Product.COLA));
     }
 
     @Test
     public void decrementsProductInventoryByOneWhenProductIsDispensed() throws Exception {
         // ARRANGE
-        inventoryManager.manageInventory(Products.CHIPS, 5);
+        productInventoryManager.manageInventory(Product.CHIPS, 5);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
 
         // ACT
-        vendingMachine.dispenseProduct(Products.CHIPS);
+        vendingMachine.dispenseProduct(Product.CHIPS);
 
         // ASSERT
-        assertEquals(4, Inventory.getInventory(Products.CHIPS));
+        assertEquals(4, ProductInventory.getInventory(Product.CHIPS));
     }
 
 }

@@ -4,12 +4,8 @@ import java.text.DecimalFormat;
 
 public class Display implements VendingMachineObserver {
 
-    private final String INSERT_COIN = "INSERT COIN ";
-    private final String ZERO = "$0.00";
-    private final String EXACT_CHANGE = "EXACT CHANGE ONLY ";
-
-    private String message = INSERT_COIN;
-    private String moneyMessage = ZERO;
+    private String message = "INSERT COIN ";
+    private String moneyMessage = "$0.00";
     private DecimalFormat currencyFormat = new DecimalFormat("$0.00");
 
     String getMessage() {
@@ -22,15 +18,15 @@ public class Display implements VendingMachineObserver {
             message = "AMOUNT TENDERED: ";
             moneyMessage = currencyFormat.format(newAmountTendered);
         } else {
-            message = INSERT_COIN;
-            moneyMessage = ZERO;
+            message = "INSERT COIN ";
+            moneyMessage = "$0.00";
         }
     }
 
     @Override
-    public void productWasDispensed(Products product, int inventoryChange) {
+    public void productWasDispensed(Product product, int inventoryChange) {
         message = "THANK YOU ";
-        moneyMessage = ZERO;
+        moneyMessage = "$0.00";
     }
 
     @Override
@@ -43,5 +39,11 @@ public class Display implements VendingMachineObserver {
     public void soldOut(double amountTendered) {
         message = "SOLD OUT: ";
         moneyMessage = currencyFormat.format(amountTendered);
+    }
+
+    @Override
+    public void outOfChange() {
+        message = "EXACT CHANGE ONLY";
+        moneyMessage = "";
     }
 }

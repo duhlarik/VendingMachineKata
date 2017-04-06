@@ -19,7 +19,7 @@ _So that I can collect money from the customer_
 
 The vending machine will accept valid coins (nickels, dimes, and quarters) and reject invalid ones (pennies).  When a
 valid coin is inserted the amount of the coin will be added to the current amount and the display will be updated.
-When there are no coins inserted, the machine displays INSERT COIN.  Rejected coins are placed in the coin return.
+When there are no coins inserted, the machine displays INSERT COIN_VALUE.  Rejected coins are placed in the coin return.
 
 NOTE: The temptation here will be to create Coin objects that know their value.  However, this is not how a real
   vending machine works.  Instead, it identifies coins by their diameter and size and then assigns a value to what
@@ -35,9 +35,9 @@ _So that I can give them an incentive to put money in the machine_
 
 There are three products: cola for $1.00, chips for $0.50, and candy for $0.65.  When the respective button is pressed
 and enough money has been inserted, the product is dispensed and the machine displays THANK YOU.  If the display is
-checked again, it will display INSERT COIN and the current amount will be set to $0.00.  If there is not enough money
+checked again, it will display INSERT COIN_VALUE and the current amount will be set to $0.00.  If there is not enough money
 inserted then the machine displays PRICE and the price of the item and subsequent checks of the display will display
-either INSERT COIN or the current amount as appropriate.
+either INSERT COIN_VALUE or the current amount as appropriate.
 
 Make Change
 -----------
@@ -57,7 +57,7 @@ _I want to have my money returned_
 _So that I can change my mind about buying stuff from the vending machine_  
 
 When the return coins button is pressed, the money the customer has placed in the machine is returned and the display shows
-INSERT COIN.
+INSERT COIN_VALUE.
 
 Sold Out
 --------
@@ -67,7 +67,7 @@ _I want to be told when the item I have selected is not available_
 _So that I can select another item_  
 
 When the item selected by the customer is out of stock, the machine displays SOLD OUT.  If the display is checked again,
-it will display the amount of money remaining in the machine or INSERT COIN if there is no money in the machine.
+it will display the amount of money remaining in the machine or INSERT COIN_VALUE if there is no money in the machine.
 
 Exact Change Only
 -----------------
@@ -77,4 +77,4 @@ _I want to be told when exact change is required_
 _So that I can determine if I can buy something with the money I have before inserting it_  
 
 When the machine is not able to make change with the money in the machine for any of the items that it sells, it will
-display EXACT CHANGE ONLY instead of INSERT COIN.
+display EXACT CHANGE ONLY instead of INSERT COIN_VALUE.

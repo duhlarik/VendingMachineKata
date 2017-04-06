@@ -1,5 +1,6 @@
 package com.vendingmachine;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,25 +13,29 @@ public class DisplayTest {
 
     private VendingMachine vendingMachine;
     private Display display;
-    private InventoryManager inventoryManager;
+    private ProductInventoryManager productInventoryManager;
 
     @Before
     public void setUp() {
         display = new Display();
-        inventoryManager = new InventoryManager();
+        productInventoryManager = new ProductInventoryManager();
         vendingMachine = new VendingMachine();
         vendingMachine.addObserver(display);
-        vendingMachine.addObserver(inventoryManager);
-        Inventory.updateInventory(Products.CANDY, 0);
-        Inventory.updateInventory(Products.CHIPS, 0);
-        Inventory.updateInventory(Products.COLA, 0);
+        vendingMachine.addObserver(productInventoryManager);
+    }
+
+    @After
+    public void tearDown() {
+        ProductInventory.updateInventory(Product.CANDY, 0);
+        ProductInventory.updateInventory(Product.CHIPS, 0);
+        ProductInventory.updateInventory(Product.COLA, 0);
     }
 
     @Test
     public void showsInsertCoinWhenNoMoneyTendered() throws Exception {
         assertThat(vendingMachine.getAmountTendered(), is(0.0));
 
-        assertThat(display.getMessage(), is ("INSERT COIN $0.00"));
+        assertThat(display.getMessage(), is("INSERT COIN $0.00"));
     }
 
     @Test
@@ -46,10 +51,10 @@ public class DisplayTest {
 
     @Test
     public void showsThankYouWhenProductIsDispensed() throws Exception {
-        inventoryManager.manageInventory(Products.CHIPS, 5);
+        productInventoryManager.manageInventory(Product.CHIPS, 5);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
-        vendingMachine.dispenseProduct(Products.CHIPS);
+        vendingMachine.dispenseProduct(Product.CHIPS);
 
         assertThat(display.getMessage(), is("THANK YOU $0.00"));
     }
@@ -58,7 +63,7 @@ public class DisplayTest {
     public void goesBackToInsertCoinWhenTransactionIsComplete() throws Exception {
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
-        vendingMachine.dispenseProduct(Products.CHIPS);
+        vendingMachine.dispenseProduct(Product.CHIPS);
         vendingMachine.done();
 
         assertThat(display.getMessage(), is("INSERT COIN $0.00"));
@@ -66,18 +71,26 @@ public class DisplayTest {
 
     @Test
     public void showsThePriceWhenInsufficientTenderedAmount() throws Exception {
-        inventoryManager.manageInventory(Products.CHIPS, 5);
+        productInventoryManager.manageInventory(Product.CHIPS, 5);
         vendingMachine.insertCoin(QUARTER);
-        vendingMachine.dispenseProduct(Products.CHIPS);
+        vendingMachine.dispenseProduct(Product.CHIPS);
 
         assertThat(display.getMessage(), is("PRICE: $0.50"));
     }
+
     @Test
     public void showsSoldOutAndAmountTenderedWhenProductIsSoldOut() throws Exception {
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
-        vendingMachine.dispenseProduct(Products.CHIPS);
+        vendingMachine.dispenseProduct(Product.CHIPS);
 
         assertThat(display.getMessage(), is("SOLD OUT: $0.50"));
+    }
+
+    @Test
+    public void showsExactChangeOnlyWhenChangeCoinsAreEmpty() {
+        vendingMachine.checkForExactChange();
+
+        assertThat(display.getMessage(), is("EXACT CHANGE ONLY"));
     }
 }
