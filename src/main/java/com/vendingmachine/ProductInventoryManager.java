@@ -1,6 +1,17 @@
 package com.vendingmachine;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProductInventoryManager implements VendingMachineObserver {
+
+    private Map<Product, Integer> inventory = new HashMap<Product, Integer>() {
+        {
+            put(Product.CHIPS, 0);
+            put(Product.CANDY, 0);
+            put(Product.COLA, 0);
+        }
+    };
 
     @Override
     public void tenderedAmountChanged(double newAmountTendered) {
@@ -8,7 +19,7 @@ public class ProductInventoryManager implements VendingMachineObserver {
 
     @Override
     public void productWasDispensed(Product product, int inventoryChange) {
-        if (ProductInventory.getInventory(product) != 0) {
+        if (getInventory(product) != 0) {
             manageInventory(product, inventoryChange);
         }
     }
@@ -26,8 +37,16 @@ public class ProductInventoryManager implements VendingMachineObserver {
     }
 
     void manageInventory(Product product, Integer inventoryChange) {
-        int currentInventory = ProductInventory.getInventory(product);
+        int currentInventory = getInventory(product);
         Integer newInventory = currentInventory + inventoryChange;
-        ProductInventory.updateInventory(product, newInventory);
+        updateInventory(product, newInventory);
+    }
+
+    int getInventory(Product product) {
+        return inventory.get(product);
+    }
+
+    void updateInventory(Product product, Integer newInventory) {
+        inventory.replace(product, newInventory);
     }
 }

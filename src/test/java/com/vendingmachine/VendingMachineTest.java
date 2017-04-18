@@ -18,29 +18,28 @@ public class VendingMachineTest {
 
     private static final double DELTA = 1e-15;
     private VendingMachine vendingMachine;
-    private Display display;
     private ProductInventoryManager productInventoryManager;
 
     @Before
     public void setUp() {
-        vendingMachine = new VendingMachine();
-        display = new Display();
+        Display display = new Display();
         productInventoryManager = new ProductInventoryManager();
+        vendingMachine = new VendingMachine(productInventoryManager);
         vendingMachine.addObserver(display);
         vendingMachine.addObserver(productInventoryManager);
     }
 
     @After
     public void tearDown() {
-        ProductInventory.updateInventory(Product.CANDY, 0);
-        ProductInventory.updateInventory(Product.CHIPS, 0);
-        ProductInventory.updateInventory(Product.COLA, 0);
+        productInventoryManager.updateInventory(Product.CANDY, 0);
+        productInventoryManager.updateInventory(Product.CHIPS, 0);
+        productInventoryManager.updateInventory(Product.COLA, 0);
     }
 
     @Test
     public void vendingMachineCanFindTheValueOfACoin() {
         // ACT
-        Double value = vendingMachine.insertCoin(NICKEL);
+        Double value = vendingMachine.insertCoin(NICKEL); // TODO: is this return value needed on the API?
 
         // ASSERT
         assertEquals(.05, value, DELTA);
@@ -114,6 +113,18 @@ public class VendingMachineTest {
     }
 
     @Test
+    public void insertingThreeValidCoinsWithAnInvalidCoinReturnsTheSumOfTheValidCoins() {
+        // ARRANGE
+        vendingMachine.insertCoin(NICKEL);
+        vendingMachine.insertCoin(PENNY);
+        vendingMachine.insertCoin(QUARTER);
+        vendingMachine.insertCoin(QUARTER);
+
+        // ASSERT
+        assertEquals(.55, vendingMachine.getAmountTendered(), DELTA);
+    }
+
+    @Test
     public void selectingAProductAfterInsertingEnoughMoneyReturnsTrueForTenderedIsEnough() {
         // ARRANGE
         vendingMachine.insertCoin(QUARTER);
@@ -122,7 +133,7 @@ public class VendingMachineTest {
         Double price = Product.PRICE(Product.CHIPS);
 
         // ACT
-        boolean tenderedIsEnough = vendingMachine.amountTenderedIsEnough(amountTendered, price);
+        boolean tenderedIsEnough = vendingMachine.amountTenderedIsEnough(amountTendered, price); // TODO: this feels like a private method
 
         // ASSERT
         assertTrue(tenderedIsEnough);
@@ -153,7 +164,7 @@ public class VendingMachineTest {
         vendingMachine.dispenseProduct(Product.CHIPS);
 
         // ASSERT
-        assertEquals(0, vendingMachine.getTendered().size());
+        assertEquals(0, vendingMachine.getAmountTendered(), DELTA);
     }
 
     @Test
@@ -178,7 +189,7 @@ public class VendingMachineTest {
         double change = vendingMachine.returnChange(Product.CANDY.PRICE);
 
         // ASSERT
-        assertEquals("DIME", CoinsForChangeDue.getNameOfCoin(change));
+        assertEquals("DIME", CoinsForChangeDue.getNameOfCoin(change)); // TODO: why is this test here? Move it? Refactor to be more end-to-end with the coin return?
 
     }
 
@@ -203,4 +214,6 @@ public class VendingMachineTest {
         // ASSERT
         assertEquals(.50, vendingMachine.returnCoins(), DELTA);
     }
+
+    // TODO: maybe some tests for when observers get notified?
 }

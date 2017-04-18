@@ -1,6 +1,6 @@
 package com.vendingmachine;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +8,13 @@ class VendingMachine {
 
     private List<Double> tendered = new ArrayList<>();
     private List<VendingMachineObserver> observers = new ArrayList<>();
+    private ProductInventoryManager inventory;
 
-    List<Double> getTendered() {
+    VendingMachine(ProductInventoryManager productInventoryManager){
+        inventory = productInventoryManager;
+    }
+
+    List<Double> getTendered() { // TODO: remove?
         return tendered;
     }
 
@@ -23,7 +28,7 @@ class VendingMachine {
             return 0.00;
         } else {
             tendered.add(value);
-            observers.forEach(observer -> observer.tenderedAmountChanged(getAmountTendered()));
+            observers.forEach(observer -> observer.tenderedAmountChanged(getAmountTendered())); // TODO: no unit-level coverage?
             return value;
         }
     }
@@ -38,7 +43,7 @@ class VendingMachine {
     private boolean productIsDispensable(Product product) {
         double amountTendered = getAmountTendered();
         double price = Product.PRICE(product);
-        if (ProductInventory.getInventory(product) == 0) {
+        if (inventory.getInventory(product) == 0) {
             observers.forEach(observer -> observer.soldOut(amountTendered));
             return false;
         }
@@ -66,11 +71,10 @@ class VendingMachine {
         observers.forEach(observer -> observer.tenderedAmountChanged(0));
     }
 
-    double returnChange(double price) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        Double change = Double.valueOf(df.format(getAmountTendered() - price));
+    double returnChange(double price) { // TODO: can this be private?
+        BigDecimal change = BigDecimal.valueOf(getAmountTendered()).subtract(BigDecimal.valueOf(price));
         tendered.clear();
-        return change;
+        return change.doubleValue(); // TODO: consider other ways of exposing the "coin return" concept
     }
 
     double returnCoins() {
@@ -81,7 +85,7 @@ class VendingMachine {
     }
 
     void checkForExactChange() {
-        if(CoinsForChangeDueInventory.outOfChange()) {
+        if(CoinsForChangeDueInventory.outOfChange()) { // TODO: again, static. This should probably connect up with the coin return concept.
             observers.forEach(VendingMachineObserver::outOfChange);
         }
     }

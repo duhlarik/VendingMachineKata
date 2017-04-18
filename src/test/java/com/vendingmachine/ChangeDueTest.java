@@ -12,9 +12,11 @@ public class ChangeDueTest {
     private VendingMachine vendingMachine;
     private ProductInventoryManager productInventoryManager;
 
+    // TODO: maybe these tests could pay into the broader concept of a "coin return"?
+
     @Before
     public void setUp() {
-        vendingMachine = new VendingMachine();
+        vendingMachine = new VendingMachine(productInventoryManager);
         productInventoryManager = new ProductInventoryManager();
         Display display = new Display();
         vendingMachine.addObserver(display);
@@ -23,9 +25,9 @@ public class ChangeDueTest {
 
     @After
     public void tearDown() {
-        ProductInventory.updateInventory(Product.CANDY, 0);
-        ProductInventory.updateInventory(Product.CHIPS, 0);
-        ProductInventory.updateInventory(Product.COLA, 0);
+        productInventoryManager.updateInventory(Product.CANDY, 0);
+        productInventoryManager.updateInventory(Product.CHIPS, 0);
+        productInventoryManager.updateInventory(Product.COLA, 0);
     }
 
     @Test

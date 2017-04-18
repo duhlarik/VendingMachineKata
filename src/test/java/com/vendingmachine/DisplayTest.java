@@ -18,17 +18,17 @@ public class DisplayTest {
     @Before
     public void setUp() {
         display = new Display();
-        productInventoryManager = new ProductInventoryManager();
-        vendingMachine = new VendingMachine();
+        productInventoryManager = new ProductInventoryManager(); // TODO: needed in this test class?
+        vendingMachine = new VendingMachine(productInventoryManager);
         vendingMachine.addObserver(display);
         vendingMachine.addObserver(productInventoryManager);
     }
 
     @After
     public void tearDown() {
-        ProductInventory.updateInventory(Product.CANDY, 0);
-        ProductInventory.updateInventory(Product.CHIPS, 0);
-        ProductInventory.updateInventory(Product.COLA, 0);
+        productInventoryManager.updateInventory(Product.CANDY, 0);
+        productInventoryManager.updateInventory(Product.CHIPS, 0);
+        productInventoryManager.updateInventory(Product.COLA, 0);
     }
 
     @Test
