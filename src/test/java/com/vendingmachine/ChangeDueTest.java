@@ -1,9 +1,10 @@
 package com.vendingmachine;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ChangeDueTest {
     private static final InsertedCoin QUARTER = new InsertedCoin(5.670, 24.26);
@@ -11,14 +12,17 @@ public class ChangeDueTest {
 
     private VendingMachine vendingMachine;
     private ProductInventoryManager productInventoryManager;
+    private CoinsForChangeDueInventory changeCoins;
+    private Display display;
 
     // TODO: maybe these tests could pay into the broader concept of a "coin return"?
 
     @Before
     public void setUp() {
-        vendingMachine = new VendingMachine(productInventoryManager);
         productInventoryManager = new ProductInventoryManager();
-        Display display = new Display();
+        changeCoins = new CoinsForChangeDueInventory();
+        display = new Display();
+        vendingMachine = new VendingMachine(productInventoryManager, changeCoins);
         vendingMachine.addObserver(display);
         vendingMachine.addObserver(productInventoryManager);
     }
@@ -31,33 +35,36 @@ public class ChangeDueTest {
     }
 
     @Test
-    public void changeDueWillReturnANickelWhenChangeDueIsFiveCents () {
+    public void changeDueWillReturnANickelWhenChangeDueIsFiveCents() {
         // ARRANGE
         productInventoryManager.manageInventory(Product.CANDY, 2);
+        changeCoins.updateCoinInventory(CoinsForChangeDue.NICKEL, 2);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(DIME);
         vendingMachine.insertCoin(DIME);
 
         // ACT
-        double change = vendingMachine.returnChange(Product.CANDY.PRICE);
+        double change = vendingMachine.dispenseProduct(Product.CANDY);
 
         // ASSERT
-        Assert.assertEquals("NICKEL", CoinsForChangeDue.getNameOfCoin(change));
+        assertEquals("NICKEL", changeCoins.changeCoin(change));
     }
 
     @Test
-    public void changeDueWillReturnADimeWhenChangeDueIsTenCents () {
+    public void changeDueWillReturnADimeWhenChangeDueIsTenCents() {
         // ARRANGE
         productInventoryManager.manageInventory(Product.CANDY, 2);
+        changeCoins.updateCoinInventory(CoinsForChangeDue.DIME, 2);
+
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
 
         // ACT
-        double change = vendingMachine.returnChange(Product.CANDY.PRICE);
+        double change = vendingMachine.dispenseProduct(Product.CANDY);
 
         // ASSERT
-        Assert.assertEquals("DIME", CoinsForChangeDue.getNameOfCoin(change));
+        assertEquals("DIME", changeCoins.changeCoin(change));
     }
 }

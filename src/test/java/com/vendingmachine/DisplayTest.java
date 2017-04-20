@@ -2,6 +2,7 @@ package com.vendingmachine;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -14,12 +15,14 @@ public class DisplayTest {
     private VendingMachine vendingMachine;
     private Display display;
     private ProductInventoryManager productInventoryManager;
+    private CoinsForChangeDueInventory changeCoins;
 
     @Before
     public void setUp() {
         display = new Display();
-        productInventoryManager = new ProductInventoryManager(); // TODO: needed in this test class?
-        vendingMachine = new VendingMachine(productInventoryManager);
+        productInventoryManager = new ProductInventoryManager(); // TODO: needed in this test class? --Yes, it's needed to add to the observer
+        changeCoins = new CoinsForChangeDueInventory();
+        vendingMachine = new VendingMachine(productInventoryManager, changeCoins);
         vendingMachine.addObserver(display);
         vendingMachine.addObserver(productInventoryManager);
     }
@@ -32,10 +35,19 @@ public class DisplayTest {
     }
 
     @Test
-    public void showsInsertCoinWhenNoMoneyTendered() throws Exception {
+    public void showsInsertCoinWhenNoMoneyTenderedAndThereAreCoinsForChange() throws Exception {
         assertThat(vendingMachine.getAmountTendered(), is(0.0));
 
         assertThat(display.getMessage(), is("INSERT COIN $0.00"));
+    }
+
+    @Test
+    @Ignore
+    public void showsExactChangeOnlyWhenNoMoneyTenderedAndThereAreNoCoinsForChange() {
+        changeCoins.updateCoinInventory(CoinsForChangeDue.DIME, 0);
+        changeCoins.updateCoinInventory(CoinsForChangeDue.NICKEL, 0);
+
+        assertThat(display.getMessage(), is( "EXACT CHANGE ONLY"));
     }
 
     @Test

@@ -1,9 +1,8 @@
 package com.vendingmachine;
 
 public enum CoinsForChangeDue {
-    NICKEL(0.05),
-    DIME(0.10),
-    QUARTER(0.25);
+    NICKEL (0.05),
+    DIME (0.10);
 
     final double COIN_VALUE;
 

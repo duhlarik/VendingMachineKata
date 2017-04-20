@@ -9,17 +9,21 @@ class VendingMachine {
     private List<Double> tendered = new ArrayList<>();
     private List<VendingMachineObserver> observers = new ArrayList<>();
     private ProductInventoryManager inventory;
+    private CoinsForChangeDueInventory coinInventory;
 
-    VendingMachine(ProductInventoryManager productInventoryManager){
+    VendingMachine(ProductInventoryManager productInventoryManager, CoinsForChangeDueInventory coinInventory) {
         inventory = productInventoryManager;
-    }
-
-    List<Double> getTendered() { // TODO: remove?
-        return tendered;
+        this.coinInventory = coinInventory;
     }
 
     void addObserver(VendingMachineObserver observer) {
         observers.add(observer);
+    }
+
+    void checkForExactChange() {
+        if (coinInventory.outOfChange()) { // TODO: again, static. This should probably connect up with the coin return concept.
+            observers.forEach(VendingMachineObserver::outOfChange);
+        }
     }
 
     double insertCoin(InsertedCoin insertedCoin) {
@@ -33,17 +37,18 @@ class VendingMachine {
         }
     }
 
-    void dispenseProduct(Product product) {
+    public double dispenseProduct(Product product) {
         if (productIsDispensable(product)) {
             observers.forEach(observer -> observer.productWasDispensed(product, -1));
-            returnChange(Product.PRICE(product));
+            return returnChange(Product.PRICE(product));
         }
+        return 0;
     }
 
     private boolean productIsDispensable(Product product) {
         double amountTendered = getAmountTendered();
         double price = Product.PRICE(product);
-        if (inventory.getInventory(product) == 0) {
+        if (product != Product.NONE && inventory.getInventory(product) == 0) {
             observers.forEach(observer -> observer.soldOut(amountTendered));
             return false;
         }
@@ -71,22 +76,13 @@ class VendingMachine {
         observers.forEach(observer -> observer.tenderedAmountChanged(0));
     }
 
-    double returnChange(double price) { // TODO: can this be private?
-        BigDecimal change = BigDecimal.valueOf(getAmountTendered()).subtract(BigDecimal.valueOf(price));
+    private double returnChange(double price) { // TODO: can this be private?
+        double amountTendered = getAmountTendered();
+        BigDecimal change = BigDecimal.valueOf(amountTendered).subtract(BigDecimal.valueOf(price));
+        if (price == 0) {
+            observers.forEach(observer -> observer.tenderedAmountChanged(0));
+        }
         tendered.clear();
         return change.doubleValue(); // TODO: consider other ways of exposing the "coin return" concept
-    }
-
-    double returnCoins() {
-        double amountTendered = getAmountTendered();
-        tendered.clear();
-        observers.forEach(observer -> observer.tenderedAmountChanged(0));
-        return amountTendered;
-    }
-
-    void checkForExactChange() {
-        if(CoinsForChangeDueInventory.outOfChange()) { // TODO: again, static. This should probably connect up with the coin return concept.
-            observers.forEach(VendingMachineObserver::outOfChange);
-        }
     }
 }

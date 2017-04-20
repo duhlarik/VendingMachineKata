@@ -19,12 +19,14 @@ public class VendingMachineTest {
     private static final double DELTA = 1e-15;
     private VendingMachine vendingMachine;
     private ProductInventoryManager productInventoryManager;
-
+    private CoinsForChangeDueInventory changeCoins;
+    private Display display;
     @Before
     public void setUp() {
-        Display display = new Display();
+        changeCoins = new CoinsForChangeDueInventory();
+        display = new Display();
         productInventoryManager = new ProductInventoryManager();
-        vendingMachine = new VendingMachine(productInventoryManager);
+        vendingMachine = new VendingMachine(productInventoryManager, changeCoins);
         vendingMachine.addObserver(display);
         vendingMachine.addObserver(productInventoryManager);
     }
@@ -161,10 +163,11 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(QUARTER);
 
         // ACT
-        vendingMachine.dispenseProduct(Product.CHIPS);
+        double actualChange = vendingMachine.dispenseProduct(Product.CHIPS);
 
         // ASSERT
         assertEquals(0, vendingMachine.getAmountTendered(), DELTA);
+        assertEquals(0.0, actualChange, DELTA);
     }
 
     @Test
@@ -176,7 +179,8 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(QUARTER);
 
         // ASSERT
-        assertEquals(.10, vendingMachine.returnChange(Product.CANDY.PRICE), DELTA);
+        assertEquals(.10, vendingMachine.dispenseProduct(Product.CANDY), DELTA);
+        assertEquals("THANK YOU $0.00", display.getMessage());
     }
 
     @Test
@@ -186,10 +190,11 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
-        double change = vendingMachine.returnChange(Product.CANDY.PRICE);
+        double change = vendingMachine.dispenseProduct(Product.CANDY);
 
         // ASSERT
         assertEquals("DIME", CoinsForChangeDue.getNameOfCoin(change)); // TODO: why is this test here? Move it? Refactor to be more end-to-end with the coin return?
+        assertEquals("THANK YOU $0.00", display.getMessage());
 
     }
 
@@ -212,7 +217,8 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(QUARTER);
 
         // ASSERT
-        assertEquals(.50, vendingMachine.returnCoins(), DELTA);
+        assertEquals(.50, vendingMachine.dispenseProduct(Product.NONE), DELTA);
+        assertEquals("INSERT COIN $0.00", display.getMessage());
     }
 
     // TODO: maybe some tests for when observers get notified?

@@ -3,7 +3,8 @@ package com.vendingmachine;
 public enum Product {
     COLA (1.00),
     CHIPS (.50),
-    CANDY (.65);
+    CANDY (.65),
+    NONE (.00);
 
     final double PRICE;
 

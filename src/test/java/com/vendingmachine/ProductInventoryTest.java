@@ -15,11 +15,13 @@ public class ProductInventoryTest {
 
     private VendingMachine vendingMachine;
     private ProductInventoryManager productInventoryManager;
+    private CoinsForChangeDueInventory changeCoins;
 
     @Before
     public void setUp() {
         productInventoryManager = new ProductInventoryManager();
-        vendingMachine = new VendingMachine(productInventoryManager);
+        changeCoins = new CoinsForChangeDueInventory();
+        vendingMachine = new VendingMachine(productInventoryManager, changeCoins);
         vendingMachine.addObserver(productInventoryManager);
     }
 

@@ -12,6 +12,13 @@ public class Display implements VendingMachineObserver {
         return message + moneyMessage;
     }
 
+//    public String defaultMessage() {
+//        if(coinsForChangeDue.outOfChange()) {
+//            message = "EXACT CHANGE ONLY";
+//        } else message = "INSERT COIN ";
+//        return message;
+//    }
+
     @Override
     public void tenderedAmountChanged(double newAmountTendered) {
         if (newAmountTendered > 0) {

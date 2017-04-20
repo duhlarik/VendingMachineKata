@@ -43,6 +43,9 @@ public class ProductInventoryManager implements VendingMachineObserver {
     }
 
     int getInventory(Product product) {
+        if (product == Product.NONE) {
+            return 0;
+        }
         return inventory.get(product);
     }
 
