@@ -12,7 +12,7 @@ public class ChangeDueTest {
 
     private VendingMachine vendingMachine;
     private ProductInventoryManager productInventoryManager;
-    private CoinsForChangeDueInventory changeCoins;
+    private CoinReturn changeCoins;
     private Display display;
 
     // TODO: maybe these tests could pay into the broader concept of a "coin return"?
@@ -20,7 +20,7 @@ public class ChangeDueTest {
     @Before
     public void setUp() {
         productInventoryManager = new ProductInventoryManager();
-        changeCoins = new CoinsForChangeDueInventory();
+        changeCoins = new CoinReturn();
         display = new Display();
         vendingMachine = new VendingMachine(productInventoryManager, changeCoins);
         vendingMachine.addObserver(display);
@@ -48,7 +48,7 @@ public class ChangeDueTest {
         double change = vendingMachine.dispenseProduct(Product.CANDY);
 
         // ASSERT
-        assertEquals("NICKEL", changeCoins.changeCoin(change));
+        assertEquals("NICKEL", changeCoins.nameOfCoinForChange(change));
     }
 
     @Test
@@ -65,6 +65,6 @@ public class ChangeDueTest {
         double change = vendingMachine.dispenseProduct(Product.CANDY);
 
         // ASSERT
-        assertEquals("DIME", changeCoins.changeCoin(change));
+        assertEquals("DIME", changeCoins.nameOfCoinForChange(change));
     }
 }

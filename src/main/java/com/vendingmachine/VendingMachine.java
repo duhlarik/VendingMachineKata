@@ -9,9 +9,9 @@ class VendingMachine {
     private List<Double> tendered = new ArrayList<>();
     private List<VendingMachineObserver> observers = new ArrayList<>();
     private ProductInventoryManager inventory;
-    private CoinsForChangeDueInventory coinInventory;
+    private CoinReturn coinInventory;
 
-    VendingMachine(ProductInventoryManager productInventoryManager, CoinsForChangeDueInventory coinInventory) {
+    VendingMachine(ProductInventoryManager productInventoryManager, CoinReturn coinInventory) {
         inventory = productInventoryManager;
         this.coinInventory = coinInventory;
     }

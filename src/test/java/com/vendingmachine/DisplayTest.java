@@ -2,7 +2,6 @@ package com.vendingmachine;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -15,13 +14,13 @@ public class DisplayTest {
     private VendingMachine vendingMachine;
     private Display display;
     private ProductInventoryManager productInventoryManager;
-    private CoinsForChangeDueInventory changeCoins;
+    private CoinReturn changeCoins;
 
     @Before
     public void setUp() {
         display = new Display();
         productInventoryManager = new ProductInventoryManager(); // TODO: needed in this test class? --Yes, it's needed to add to the observer
-        changeCoins = new CoinsForChangeDueInventory();
+        changeCoins = new CoinReturn();
         vendingMachine = new VendingMachine(productInventoryManager, changeCoins);
         vendingMachine.addObserver(display);
         vendingMachine.addObserver(productInventoryManager);
@@ -32,26 +31,26 @@ public class DisplayTest {
         productInventoryManager.updateInventory(Product.CANDY, 0);
         productInventoryManager.updateInventory(Product.CHIPS, 0);
         productInventoryManager.updateInventory(Product.COLA, 0);
+        changeCoins.updateCoinInventory(CoinsForChangeDue.DIME, 0);
+        changeCoins.updateCoinInventory(CoinsForChangeDue.NICKEL, 0);
     }
 
     @Test
-    public void showsInsertCoinWhenNoMoneyTenderedAndThereAreCoinsForChange() throws Exception {
+    public void displayShowsInsertCoinWhenNoMoneyTenderedAndThereAreCoinsForChange() throws Exception {
         assertThat(vendingMachine.getAmountTendered(), is(0.0));
 
         assertThat(display.getMessage(), is("INSERT COIN $0.00"));
     }
 
     @Test
-    @Ignore
-    public void showsExactChangeOnlyWhenNoMoneyTenderedAndThereAreNoCoinsForChange() {
-        changeCoins.updateCoinInventory(CoinsForChangeDue.DIME, 0);
-        changeCoins.updateCoinInventory(CoinsForChangeDue.NICKEL, 0);
+    public void displayShowsExactChangeOnlyWhenNoMoneyTenderedAndThereAreNoCoinsForChange() {
+        vendingMachine.checkForExactChange();
 
         assertThat(display.getMessage(), is( "EXACT CHANGE ONLY"));
     }
 
     @Test
-    public void showsTheAmountTenderedAsYouPutMoneyInTheVendingMachine() throws Exception {
+    public void displayShowsTheAmountTenderedAsYouPutMoneyInTheVendingMachine() throws Exception {
         vendingMachine.insertCoin(QUARTER);
 
         assertThat(display.getMessage(), is("AMOUNT TENDERED: $0.25"));
@@ -62,7 +61,7 @@ public class DisplayTest {
     }
 
     @Test
-    public void showsThankYouWhenProductIsDispensed() throws Exception {
+    public void displayShowsThankYouWhenProductIsDispensed() throws Exception {
         productInventoryManager.manageInventory(Product.CHIPS, 5);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
@@ -72,7 +71,7 @@ public class DisplayTest {
     }
 
     @Test
-    public void goesBackToInsertCoinWhenTransactionIsComplete() throws Exception {
+    public void displayGoesBackToInsertCoinWhenTransactionIsComplete() throws Exception {
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.dispenseProduct(Product.CHIPS);
@@ -82,7 +81,7 @@ public class DisplayTest {
     }
 
     @Test
-    public void showsThePriceWhenInsufficientTenderedAmount() throws Exception {
+    public void displayShowsThePriceWhenInsufficientTenderedAmount() throws Exception {
         productInventoryManager.manageInventory(Product.CHIPS, 5);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.dispenseProduct(Product.CHIPS);
@@ -91,7 +90,7 @@ public class DisplayTest {
     }
 
     @Test
-    public void showsSoldOutAndAmountTenderedWhenProductIsSoldOut() throws Exception {
+    public void displayShowsSoldOutAndAmountTenderedWhenProductIsSoldOut() throws Exception {
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.insertCoin(QUARTER);
         vendingMachine.dispenseProduct(Product.CHIPS);
@@ -100,7 +99,7 @@ public class DisplayTest {
     }
 
     @Test
-    public void showsExactChangeOnlyWhenChangeCoinsAreEmpty() {
+    public void displayShowsExactChangeOnlyWhenChangeCoinsAreEmpty() {
         vendingMachine.checkForExactChange();
 
         assertThat(display.getMessage(), is("EXACT CHANGE ONLY"));

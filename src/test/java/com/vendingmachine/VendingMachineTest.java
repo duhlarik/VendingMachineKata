@@ -19,11 +19,11 @@ public class VendingMachineTest {
     private static final double DELTA = 1e-15;
     private VendingMachine vendingMachine;
     private ProductInventoryManager productInventoryManager;
-    private CoinsForChangeDueInventory changeCoins;
+    private CoinReturn changeCoins;
     private Display display;
     @Before
     public void setUp() {
-        changeCoins = new CoinsForChangeDueInventory();
+        changeCoins = new CoinReturn();
         display = new Display();
         productInventoryManager = new ProductInventoryManager();
         vendingMachine = new VendingMachine(productInventoryManager, changeCoins);

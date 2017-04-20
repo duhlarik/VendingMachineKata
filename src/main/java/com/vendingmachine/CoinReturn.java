@@ -3,9 +3,9 @@ package com.vendingmachine;
 import java.util.HashMap;
 import java.util.Map;
 
-class CoinsForChangeDueInventory {
+class CoinReturn {
 
-    private Map<CoinsForChangeDue, Integer> numberOfChangeCoins = new HashMap<CoinsForChangeDue, Integer>() {
+    private Map<CoinsForChangeDue, Integer> changeCoinsInventory = new HashMap<CoinsForChangeDue, Integer>() {
         {
             put(CoinsForChangeDue.NICKEL, 0);
             put(CoinsForChangeDue.DIME, 0);
@@ -13,10 +13,10 @@ class CoinsForChangeDueInventory {
     };
 
     boolean outOfChange() {
-        return (numberOfChangeCoins.get(CoinsForChangeDue.DIME) == 0 && numberOfChangeCoins.get(CoinsForChangeDue.NICKEL) < 2);
+        return (changeCoinsInventory.get(CoinsForChangeDue.DIME) == 0 && changeCoinsInventory.get(CoinsForChangeDue.NICKEL) < 2);
     }
 
-    String changeCoin(double changeDue) {
+    String nameOfCoinForChange(double changeDue) {
         String changeCoin = "";
         if(!outOfChange()) {
             changeCoin = CoinsForChangeDue.getNameOfCoin(changeDue);
@@ -25,6 +25,6 @@ class CoinsForChangeDueInventory {
     }
 
     void updateCoinInventory(CoinsForChangeDue changeCoin, Integer inventoryChange) {
-        numberOfChangeCoins.replace(changeCoin, inventoryChange);
+        changeCoinsInventory.replace(changeCoin, inventoryChange);
     }
 }
