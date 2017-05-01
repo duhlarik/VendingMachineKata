@@ -7,7 +7,8 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 
 public class VendingMachineTest {
 
@@ -21,6 +22,7 @@ public class VendingMachineTest {
     private ProductInventoryManager productInventoryManager;
     private CoinReturn changeCoins;
     private Display display;
+
     @Before
     public void setUp() {
         changeCoins = new CoinReturn();
@@ -127,35 +129,6 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void selectingAProductAfterInsertingEnoughMoneyReturnsTrueForTenderedIsEnough() {
-        // ARRANGE
-        vendingMachine.insertCoin(QUARTER);
-        vendingMachine.insertCoin(QUARTER);
-        Double amountTendered = vendingMachine.getAmountTendered();
-        Double price = Product.PRICE(Product.CHIPS);
-
-        // ACT
-        boolean tenderedIsEnough = vendingMachine.amountTenderedIsEnough(amountTendered, price); // TODO: this feels like a private method
-
-        // ASSERT
-        assertTrue(tenderedIsEnough);
-    }
-
-    @Test
-    public void selectingAProductWithoutInsertingEnoughMoneyReturnsFalseForTenderedIsEnough() {
-        // ARRANGE
-        vendingMachine.insertCoin(QUARTER);
-        Double amountTendered = vendingMachine.getAmountTendered();
-        Double price = Product.PRICE(Product.CHIPS);
-
-        // ACT
-        boolean tenderedIsEnough = vendingMachine.amountTenderedIsEnough(amountTendered, price);
-
-        // ASSERT
-        assertFalse(tenderedIsEnough);
-    }
-
-    @Test
     public void dispensingAProductResetsAmountTenderedToZero() {
         // ARRANGE
         productInventoryManager.manageInventory(Product.CHIPS, 2);
@@ -195,7 +168,6 @@ public class VendingMachineTest {
         // ASSERT
         assertEquals("DIME", CoinsForChangeDue.getNameOfCoin(change)); // TODO: why is this test here? Move it? Refactor to be more end-to-end with the coin return?
         assertEquals("THANK YOU $0.00", display.getMessage());
-
     }
 
     @Test

@@ -21,7 +21,7 @@ class VendingMachine {
     }
 
     void checkForExactChange() {
-        if (coinInventory.outOfChange()) { // TODO: again, static. This should probably connect up with the coin return concept.
+        if (coinInventory.outOfChange()) { // TODO: This should probably connect up with the coin return concept.
             observers.forEach(VendingMachineObserver::outOfChange);
         }
     }
@@ -67,7 +67,7 @@ class VendingMachine {
         return amountTendered;
     }
 
-    boolean amountTenderedIsEnough(Double amountTendered, Double price) {
+    private boolean amountTenderedIsEnough(Double amountTendered, Double price) {
         return amountTendered >= price;
     }
 
@@ -76,7 +76,7 @@ class VendingMachine {
         observers.forEach(observer -> observer.tenderedAmountChanged(0));
     }
 
-    private double returnChange(double price) { // TODO: can this be private?
+    private double returnChange(double price) {
         double amountTendered = getAmountTendered();
         BigDecimal change = BigDecimal.valueOf(amountTendered).subtract(BigDecimal.valueOf(price));
         if (price == 0) {
